@@ -61,6 +61,31 @@ public class Room
         Vector2Int centerPosition = GetCenter();
         Tile centerTile = Tiles[centerPosition.x - Position.x, centerPosition.y - Position.y];
         centerTile.IsCenterTile = true;
+
+        // Ensure corner tiles are walkable and have no obstacles
+        MarkCornerTilesAsWalkable();
+    }
+
+    private void MarkCornerTilesAsWalkable()
+    {
+        Vector2Int[] cornerPositions = new Vector2Int[]
+        {
+            Position,
+            Position + new Vector2Int(Tiles.GetLength(0) - 1, 0),
+            Position + new Vector2Int(0, Tiles.GetLength(1) - 1),
+            Position + new Vector2Int(Tiles.GetLength(0) - 1, Tiles.GetLength(1) - 1)
+        };
+
+        foreach (Vector2Int cornerPosition in cornerPositions)
+        {
+            Tile cornerTile = TileGenerator.Instance.GetTileAtPosition(cornerPosition);
+            if (cornerTile != null)
+            {
+                cornerTile.IsWalkable = true;
+                cornerTile.IsOccupied = false;
+                cornerTile.GetComponent<Renderer>().material.color = Color.black;
+            }
+        }
     }
 
     public Vector2Int GetCenter()

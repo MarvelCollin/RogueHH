@@ -8,50 +8,44 @@ public class EnemyAggroState : EnemyState
 
     public override void Enter()
     {
-        Debug.Log("Masuk Aggro State mas");
+        Debug.Log("Entering Aggro State");
         enemy.SetStatus("!!");
     }
 
     public override void Update()
     {
-
         if (TileGenerator.Instance.getEnemyTurn())
         {
-            // Debug.Log(TileGenerator.Instance.getEnemyToMove());
-
             if (enemy.IsPlayerInAttackRange())
             {
                 enemy.SetState(new EnemyAttackState(enemy, enemyAttributes));
-                // enemy.AnimationToIdle();
-
-                TileGenerator.Instance.setPlayerTurn();
             }
             else
             {
-                Debug.Log("lagi chase player - EnemyAggroState");
+                enemy.AnimationToMoving();
 
                 ChasePlayer();
             }
-        } else {
+        }
+        else
+        {
             enemy.AnimationToIdle();
         }
     }
 
     public override void Exit()
     {
-        
+        // Exit logic if needed
     }
 
     public void ChasePlayer()
     {
-        if (TileGenerator.Instance.getPlayerTurn()) return ;
+        if (TileGenerator.Instance.getPlayerTurn()) return;
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-
 
         Tile startTile = TileGenerator.Instance.GetTileAtPosition(new Vector2Int((int)enemy.transform.position.x, (int)enemy.transform.position.z));
         Tile targetTile = TileGenerator.Instance.GetTileAtPosition(new Vector2Int((int)playerObject.transform.position.x, (int)playerObject.transform.position.z));
         List<Tile> path = TileGenerator.Instance.FindPath(startTile, targetTile, true);
-        enemy.AnimationToMoving();
 
         if (path != null && path.Count > 1)
         {
@@ -272,7 +266,6 @@ public class EnemyAggroState : EnemyState
 
         if (targetTile != null)
         {
-            Debug.Log("Tile Is Unavailable");
             targetTile.SetWalkable(false);
             targetTile.IsOccupied = true;
         }

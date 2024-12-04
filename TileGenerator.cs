@@ -186,12 +186,12 @@ public class TileGenerator : MonoBehaviour
     public void SpawnPlayerInRandomRoom()
     {
         Room randomRoom = rooms[Random.Range(0, rooms.Count)];
-        Vector2Int spawnPosition = randomRoom.GetCenter();
-        Debug.Log("Room Center: " + spawnPosition);
-        Tile centerTile = randomRoom.Tiles[spawnPosition.x - randomRoom.Position.x, spawnPosition.y - randomRoom.Position.y];
+        Vector2Int centerPosition = randomRoom.GetCenter();
+        Debug.Log("Room Center: " + centerPosition);
+        Tile centerTile = randomRoom.Tiles[centerPosition.x - randomRoom.Position.x, centerPosition.y - randomRoom.Position.y];
         centerTile.IsCenterTile = true;
         float tileHeight = centerTile.transform.position.y;
-        Vector3 newPosition = new Vector3(spawnPosition.x, tileHeight + 2f, spawnPosition.y);
+        Vector3 newPosition = new Vector3(centerPosition.x, tileHeight + 2f, centerPosition.y);
         Player.Instance.SetInitialPosition(new Vector2Int((int)newPosition.x, (int)newPosition.z));
         setPlayerTurn();
     }
@@ -673,5 +673,20 @@ public class TileGenerator : MonoBehaviour
 
     public IEnumerable Delay(int second){
         yield return new WaitForSeconds(second);
+    }
+
+    public Room GetRoomContainingTile(Tile tile)
+    {
+        foreach (Room room in rooms)
+        {
+            foreach (Tile roomTile in room.Tiles)
+            {
+                if (roomTile == tile)
+                {
+                    return room;
+                }
+            }
+        }
+        return null;
     }
 }

@@ -11,10 +11,11 @@ public class EnemyAlertState : EnemyState
 
     public override void Update()
     {
-        if (enemy.IsInDistance())
+        if (enemy.HasLineOfSightToPlayer())
         {
             enemy.SetState(new EnemyAggroState(enemy, enemyAttributes));
-        } else if(!enemy.IsPlayerInRadius(8f))
+        }
+        else if (!enemy.IsPlayerInRadius(8f))
         {
             enemy.SetState(new EnemyIdleState(enemy, enemyAttributes));
         }

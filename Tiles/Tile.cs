@@ -94,10 +94,28 @@ public class Tile : MonoBehaviour
             // Destroy(gameObject); 
         }
         // Ensure edge tiles are walkable
-        if (IsCorridorTile)
+        if (IsCorridorTile || IsCornerTile())
         {
             IsWalkable = true;
         }
+    }
+
+    public bool IsCornerTile()
+    {
+        // Check if the tile is at the corner of the room
+        Room room = TileGenerator.Instance.GetRoomContainingTile(this);
+        if (room != null)
+        {
+            Vector2Int roomPosition = room.Position;
+            int roomWidth = room.Tiles.GetLength(0);
+            int roomHeight = room.Tiles.GetLength(1);
+
+            return (Position == roomPosition ||
+                    Position == roomPosition + new Vector2Int(roomWidth - 1, 0) ||
+                    Position == roomPosition + new Vector2Int(0, roomHeight - 1) ||
+                    Position == roomPosition + new Vector2Int(roomWidth - 1, roomHeight - 1));
+        }
+        return false;
     }
 
     public Tile getTileFromPosition(Vector2Int position)
@@ -110,12 +128,13 @@ public class Tile : MonoBehaviour
         if (enemyPrefab != null)
         {
             Vector3 spawnPosition = positionOffset ?? transform.position;
-            GameObject enemyObject = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+            GameObject enemyObject = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity, transform);
             enemy = enemyObject.GetComponent<Enemy>();
             if (enemy != null)
             {
                 enemy.roomSize = new Vector2(1, 1);
                 enemyObject.transform.position = spawnPosition;
+                enemyObject.transform.SetParent(transform);
                 Debug.Log("Enemy placed at position: " + enemyObject.transform.position);
                 SetWalkable(false);
             }

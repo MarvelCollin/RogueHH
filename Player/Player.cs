@@ -102,42 +102,18 @@ public class Player : MonoBehaviour
         EventManager.StopListening("PlayerTurn", OnPlayerTurn);
         EventManager.StopListening("EnemyTurn", OnEnemyTurn);
         EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
-        EventManager.StopListening("EnemyTurnCompleted", OnEnemyTurnCompleted);
     }
 
     private void OnPlayerTurn()
     {
-        // Handle player turn start
     }
 
     private void OnEnemyTurn()
     {
-        // Handle enemy turn start
     }
 
     private void OnEnemyTurnCompleted()
     {
-        // Handle enemy turn completion
         TileGenerator.Instance.setPlayerTurn();
     }
 
@@ -276,6 +252,7 @@ public class Player : MonoBehaviour
     {
         pathQueue = new Queue<Vector2Int>(path);
         SetState(new PlayerMovingState(this, pathQueue));
+        EventManager.TriggerEvent("EnemyTurn"); // Trigger enemy turn event
     }
 
     public void StopMovement()

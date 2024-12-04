@@ -75,7 +75,7 @@ public class Enemy : MonoBehaviour
 
     private void OnEnemyTurn()
     {
-        // Handle enemy turn start
+        TakeTurn();
     }
 
     void Update()
@@ -455,13 +455,14 @@ public class Enemy : MonoBehaviour
         {
             SetState(new EnemyAttackState(this, enemyAttributes));
         }
+        else if (currentState is EnemyAggroState || IsPlayerInRadius(alertRange))
+        {
+            SetState(new EnemyAggroState(this, enemyAttributes));
+        }
         else
         {
-            // Move towards player or perform other actions
-            // ...
-            HasCompletedTurn = true;
+            SetState(new EnemyIdleState(this, enemyAttributes));
         }
-        EventManager.TriggerEvent("EnemyTurnCompleted");
     }
 
     public void CompleteTurn()
