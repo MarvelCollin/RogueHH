@@ -47,9 +47,25 @@ public class Enemy : MonoBehaviour
         alertRange = enemyAttributes.AttackRange;
         maxHealth = enemyAttributes.Defense * 10;
         enemyAttributes.Health = maxHealth;
+        if (TileGenerator.Instance.floorLevel == 0)
+        {
+            setEnemyAsBoss();
+
+        }
 
         UpdateHealthBar();
         SetState(new EnemyIdleState(this, enemyAttributes));
+    }
+
+
+    public void setEnemyAsBoss()
+    {
+        enemyAttributes.AttackRange = 200;
+        enemyAttributes.Defense = 300;
+        enemyAttributes.Attack = 660;
+        enemyAttributes.CriticalRate = 70;
+        enemyAttributes.CriticalDamage = 90;
+        enemyAttributes.Health = 7000;
     }
 
     void Awake()
@@ -82,7 +98,7 @@ public class Enemy : MonoBehaviour
     {
         currentState?.Update();
 
-        if (playerMoved)    
+        if (playerMoved)
         {
             playerMoved = false;
             currentState?.Update();
@@ -257,7 +273,7 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int damage, bool isCritical = false)
     {
-        damage -= enemyAttributes.Defense; 
+        damage -= enemyAttributes.Defense;
         damage = Mathf.Max(damage, 0);
         enemyAttributes.Health -= damage;
         if (enemyAttributes.Health < 0) enemyAttributes.Health = 0;
@@ -309,7 +325,7 @@ public class Enemy : MonoBehaviour
         damagePoints.gameObject.SetActive(false);
     }
 
-    private void UpdateHealthBar()
+    public void UpdateHealthBar()
     {
         if (healthBar != null)
         {
@@ -319,7 +335,7 @@ public class Enemy : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (TileGenerator.Instance.getPlayerTurn() && IsPlayerInAttackRange() && canClick)    
+        if (TileGenerator.Instance.getPlayerTurn() && IsPlayerInAttackRange() && canClick)
         {
             canClick = false;
             Debug.Log("Enemy clicked by player.");
@@ -439,7 +455,8 @@ public class Enemy : MonoBehaviour
 
     public bool IsPlayerInRadius(float radius)
     {
-        if(!Player.Instance){
+        if (!Player.Instance)
+        {
             Debug.Log("PLayernya ga ada king");
             return false;
         }

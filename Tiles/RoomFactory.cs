@@ -296,15 +296,7 @@ public class RoomFactory
                         fillCount++;
                     }
                 }
-                else if (spawnRoll < obstacle1x2SpawnChance + obstacle2x2SpawnChance + enemySpawnChance)
-                {
-                    Vector3 positionOffset = tile.transform.position;
-                    tile.PlaceEnemy(enemyPrefab, positionOffset);
-                    tile.IsWalkable = false;
-                    usedPositions.Add(tile.Position);
-                    fillCount++;
-                }
-                else if (spawnRoll < obstacle1x2SpawnChance + obstacle2x2SpawnChance + enemySpawnChance + decorationSpawnChance)
+                else if (spawnRoll < obstacle1x2SpawnChance + obstacle2x2SpawnChance + decorationSpawnChance)
                 {
                     int decorationIndex = Random.Range(0, decorationPrefabs.Length);
                     GameObject decorationPrefab = decorationPrefabs[decorationIndex];
@@ -342,25 +334,5 @@ public class RoomFactory
             }
         }
         return false;
-    }
-
-    public void GenerateSingleEnemyInRoom(Room room)
-    {
-        if (enemyPrefab != null)
-        {
-            Vector2Int enemyPosition = room.GetCenter();
-            GameObject enemyObject = Object.Instantiate(enemyPrefab, new Vector3(enemyPosition.x, 0, enemyPosition.y), Quaternion.identity);
-            Enemy enemy = enemyObject.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemyObject.tag = "Enemy";
-                Tile enemyTile = TileGenerator.Instance.GetTileAtPosition(enemyPosition);
-                if (enemyTile != null)
-                {
-                    enemyTile.IsOccupied = true;
-                    enemyTile.SetWalkable(false);
-                }
-            }
-        }
     }
 }

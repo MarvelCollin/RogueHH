@@ -6,6 +6,7 @@ public class EnemyAttributes : MonoBehaviour
 {
     public static EnemyAttributes Instance { get; private set; }
 
+
     private void Awake()
     {
         if (Instance == null)

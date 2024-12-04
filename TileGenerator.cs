@@ -122,7 +122,7 @@ public class TileGenerator : MonoBehaviour
         GameFacade.Instance.StartGame(floorLevel);
     }
 
-    void Update()   
+    void Update()
     {
         UpdateEnemyCounter();
         if (isEnemyTurn && enemiesToMove <= 0)
@@ -173,6 +173,11 @@ public class TileGenerator : MonoBehaviour
         yield return StartCoroutine(MoveColoredTilesAndPlayer());
 
         roomFactory.GenerateObstaclesDecorationsAndEnemies(rooms);
+
+        if (floorLevel > 0)
+        {
+            roomFactory.SpawnEnemiesInRooms(rooms);
+        }
 
         // Debug.Log("Obstacles and decorations generated.");
     }
@@ -653,16 +658,32 @@ public class TileGenerator : MonoBehaviour
         }
 
         roomFactory.GenerateObstaclesDecorationsAndEnemies(rooms);
-        Debug.Log("Obstacles and decorations generated in the single room.");
 
-        // Generate one enemy
-        roomFactory.GenerateSingleEnemyInRoom(singleRoom);
+        if (enemyPrefab != null)
+        {
+            Vector2Int enemyPosition = singleRoom.GetCenter();
+            GameObject enemyObject = Object.Instantiate(enemyPrefab, new Vector3(enemyPosition.x, 0, enemyPosition.y), Quaternion.identity);
+            Enemy enemy = enemyObject.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemyObject.tag = "Enemy";
+                Tile enemyTile = TileGenerator.Instance.GetTileAtPosition(enemyPosition);
+                if (enemyTile != null)
+                {
+                    enemyTile.IsOccupied = true;
+                    enemyTile.SetWalkable(false);
+                }
+
+                enemy.setEnemyAsBoss();
+            }
+        }
     }
+
 
     public void UpdateEnemyCounter()
     {
-        // int enemyCount = GameObject.FindGameObjectWithTag("Enemy") == null ? 0 : GameObject.FindGameObjectsWithTag("Enemy").Length;
-        // PlayerUIManager.Instance.setEnemyCounter(enemyCount);
+        int enemyCount = GameObject.FindGameObjectWithTag("Enemy") == null ? 0 : GameObject.FindGameObjectsWithTag("Enemy").Length;
+        PlayerUIManager.Instance.setEnemyCounter(enemyCount);
     }
 
     public int getEnemyCounter()
@@ -671,7 +692,8 @@ public class TileGenerator : MonoBehaviour
         return GameObject.FindGameObjectsWithTag("Enemy").Length;
     }
 
-    public IEnumerable Delay(int second){
+    public IEnumerable Delay(int second)
+    {
         yield return new WaitForSeconds(second);
     }
 
